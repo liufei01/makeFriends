@@ -9,7 +9,10 @@ import {
   Button
 } from 'antd-mobile'
 import Logo from '../../components/logo/logo'
-export default class Login extends Component {
+import { connect } from 'react-redux'
+import { login } from '../../redux/actions'
+import { Redirect } from 'react-router-dom'  //路由重定向跳转
+class Login extends Component {
   state = {
     username: '',
     password: ''
@@ -22,17 +25,23 @@ export default class Login extends Component {
   toRegister = () => {
     this.props.history.replace('/register')
   }
-  // 注册
+  // 登录
   login = () => {
-    console.log(this.state)
+    this.props.login(this.state)
   }
   render () {
+    const {msg,redirectTo}=this.props
+    if (redirectTo) {
+      return <Redirect to={redirectTo}/>
+    }
     return (
       <div>
         <NavBar>快乐交友</NavBar>
         <Logo />
         <WingBlank>
           <List>
+            {msg ?<div className='error-msg'>{msg}</div>:null}
+            <WhiteSpace />
             <InputItem
               placeholder='输入用户名'
               onChange={val => this.handleChange('username', val)}
@@ -59,3 +68,4 @@ export default class Login extends Component {
     )
   }
 }
+export default connect(state => state.user, { login })(Login)

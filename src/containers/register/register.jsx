@@ -12,6 +12,7 @@ import {
 import { connect } from 'react-redux'
 import Logo from '../../components/logo/logo'
 import { register } from '../../redux/actions'
+import { Redirect } from 'react-router-dom'  //路由重定向跳转
 class Register extends Component {
   constructor () {
     super()
@@ -24,12 +25,19 @@ class Register extends Component {
   }
   render () {
     // const { type } = this.state
+    const {msg,redirectTo}=this.props
+    console.log(this.props);
+    if (redirectTo) {
+      return <Redirect to={redirectTo}/>
+    }
     return (
       <div>
         <NavBar>快乐交友</NavBar>
         <Logo />
         <WingBlank>
           <List>
+            {msg? <div className='error-msg'>{msg}</div>:null}
+            <WhiteSpace />
             <InputItem
               placeholder='输入用户名'
               onChange={val => this.handleChange('username', val)}

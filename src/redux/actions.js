@@ -6,50 +6,55 @@ import { AUTH_SUCCESS, ERROR_MSG } from './action-types'
 // 每一个action_types都对应一个同步action
 
 // 授权成功的action
-const authSuccess=(user)=>({
-  type:AUTH_SUCCESS,data:user
+const authSuccess = user => ({
+  type: AUTH_SUCCESS,
+  data: user
 })
 
 // 授权失败的action
-const errorMsg=(msg)=>({
-  type:ERROR_MSG,data:msg
+const errorMsg = msg => ({
+  type: ERROR_MSG,
+  data: msg
 })
 // 注册异步action
-export const register = (user) => {
-  const {username ,password,password2,type}=user
-  // 表单验证
-  if (password!=password2) {
-    return errorMsg('2次密码保持一致')
+export const register = ({ username, password, password2, type }) => {
+  // 进行前台表单验证, 如果不合法返回一个同步 action 对象, 显示提示信息
+  if (!username || !password || !type) {
+    return errorMsg('用户名密码必须输入')
   }
+  if (password !== password2) {
+    return errorMsg('密码和确认密码不同')
+  }
+
   return async dispatch => {
     // 发送注册的异步ajax请求
-    const response = await reqRegister({username ,password,type})
-    if (!response) {
-      return
-    }
+    const response = await reqRegister({ username, password, type })
     const res = response.data
     if (res.code == 0) {
       //分发成功的同步action
       dispatch(authSuccess(res.data))
     } else {
       //分发失败的同步action
-      dispatch(errorMsg(res.data))
+      dispatch(errorMsg(res.msg))
     }
   }
 }
 
 // 登录异步action
-export const login = (user) => {
+export const login = ({ username, password }) => {
+  if (!username || !password) {
+    return errorMsg('用户密码必须输入')
+  }
   return async dispatch => {
     // 发送注册的异步ajax请求
-    const res = await reqLogin(user)
-    const data = res.data
-    if (data.code == 0) {
+    const response = await reqLogin({ username, password })
+    const res = response.data
+    if (res.code == 0) {
       //分发成功的同步action
       dispatch(authSuccess(res.data))
     } else {
       //分发失败的同步action
-      dispatch(errorMsg(res.data))
+      dispatch(errorMsg(res.msg))
     }
   }
 }
