@@ -79,6 +79,7 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom"
   },
+  "proxy": "http://localhost:3900",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -98,6 +99,7 @@
     ]
   },
   "devDependencies": {
+    "axios": "^0.21.0",
     "babel-plugin-import": "^1.13.3",
     "css-loader": "^5.0.1",
     "customize-cra": "^1.0.0",

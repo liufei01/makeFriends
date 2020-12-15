@@ -9,10 +9,10 @@ import {
   Radio,
   Button
 } from 'antd-mobile'
-
+import { connect } from 'react-redux'
 import Logo from '../../components/logo/logo'
-
-export default class Register extends Component {
+import { register } from '../../redux/actions'
+class Register extends Component {
   constructor () {
     super()
     this.state = {
@@ -78,26 +78,30 @@ export default class Register extends Component {
               注&nbsp;&nbsp;&nbsp;册
             </Button>
             <WhiteSpace />
-            <Button type="ghost" onClick={this.toLogin}>已经有账号</Button>
+            <Button type='ghost' onClick={this.toLogin}>
+              已经有账号
+            </Button>
           </List>
         </WingBlank>
       </div>
     )
   }
-  
+
   // 进行数据双向绑定
-  handleChange=(name,val)=>{
+  handleChange = (name, val) => {
     this.setState({
-      [name]:val
+      [name]: val
     })
   }
 
   // 跳转到登录页面
-  toLogin=()=>{
+  toLogin = () => {
     this.props.history.replace('./login')
   }
   // 注册成功
-  register=()=>{
-    console.log(JSON.stringify(this.state));
+  register = () => {
+    this.props.register(this.state)
   }
 }
+
+export default connect(state => state.user, { register })(Register)
