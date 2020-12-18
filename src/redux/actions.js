@@ -1,7 +1,7 @@
 // 包含多个action creator 异步action 同步action
-import { reqRegister, reqLogin } from '../api/index'
+import { reqRegister, reqLogin,reqUpdataUser } from '../api/index'
 
-import { AUTH_SUCCESS, ERROR_MSG } from './action-types'
+import { AUTH_SUCCESS, ERROR_MSG,RECEIVE_MSG,RESET_USER } from './action-types'
 
 // 每一个action_types都对应一个同步action
 
@@ -14,6 +14,16 @@ const authSuccess = user => ({
 // 授权失败的action
 const errorMsg = msg => ({
   type: ERROR_MSG,
+  data: msg
+})
+// 接收用户的同步action
+const receiveMsg = user => ({
+  type: RECEIVE_MSG,
+  data: user
+})
+// 重置用户的同步action
+const reserMsg = msg => ({
+  type: RESET_USER,
   data: msg
 })
 // 注册异步action
@@ -55,6 +65,21 @@ export const login = ({ username, password }) => {
     } else {
       //分发失败的同步action
       dispatch(errorMsg(res.msg))
+    }
+  }
+}
+
+// 更新用户action
+export const updateUser=(user)=>{
+  return async dispath=>{
+    const response= await reqUpdataUser(user)
+    const res=response.data
+    if (res.code==0) {
+      // 分发成功的同步action
+      dispath(receiveMsg(res.data))
+    }else{
+      // 分发失败的同步action
+      dispath(reserMsg(res.msg))
     }
   }
 }
