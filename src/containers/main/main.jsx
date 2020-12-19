@@ -6,6 +6,7 @@ import ShuaiGeInfo from '../shuaige_info/shuaige_info'
 import MeiNvInfo from '../meinv_info/meinv_info'
 import Cookies from 'js-cookie' // 可以操作前端cookie的对象set()/get()/remove()
 import { setPath } from '../../utils/index'
+import { getUser } from '../../redux/actions'
 
 class Main extends Component {
   constructor () {
@@ -13,12 +14,12 @@ class Main extends Component {
     this.state = {}
   }
   // 生命周期函数
-  componentDidMount() {
+  componentDidMount () {
     // 曾经登录过（cookie中有userId），但是现在还没登录（reducer中有userId的数据），如果cookie中有userId，发送请求获取对应的user
     const userId = Cookies.get('userId')
-    if (userId&&!this.props._id) {
+    if (userId && !this.props._id) {
       // 发送异步请求，获取user
-      console.log('发送请求');
+      this.props.getUser()
     }
   }
   render () {
@@ -45,18 +46,17 @@ class Main extends Component {
     } else {
       let path = this.props.location.pathname
       if (path == '/') path = setPath(this.props.type, this.props.header)
-      return <Redirect to={path} />
+      return (
+        <div>
+          <Switch>
+            <Route path='/shuaigeinfo' component={ShuaiGeInfo}></Route>
+            <Route path='/meinvinfo' component={MeiNvInfo}></Route>
+            <Redirect to={path} />
+          </Switch>
+        </div>
+      )
     }
-
-    return (
-      <div>
-        <Switch>
-          <Route path='/shuaigeinfo' component={ShuaiGeInfo}></Route>
-          <Route path='/meinvinfo' component={MeiNvInfo}></Route>
-        </Switch>
-      </div>
-    )
   }
 }
 
-export default connect(state => state.user)(Main)
+export default connect(state => state.user, { getUser })(Main)
