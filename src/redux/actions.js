@@ -22,7 +22,7 @@ const receiveMsg = user => ({
   data: user
 })
 // 重置用户的同步action
-const reserMsg = msg => ({
+export const reserMsg = msg => ({
   type: RESET_USER,
   data: msg
 })

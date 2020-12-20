@@ -2,8 +2,15 @@
 import React, { Component } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { NavBar } from 'antd-mobile'
 import ShuaiGeInfo from '../shuaige_info/shuaige_info'
 import MeiNvInfo from '../meinv_info/meinv_info'
+import MeiNv from '../meinv/meinv'
+import ShuaiGe from '../shuaige/shuaige'
+import Message from '../message/message'
+import Personal from '../personal/personal'
+import NotFound from '../../components/not-found/not-found'
+import NavFooter from '../../components/nav-footer/nav-footer'
 import Cookies from 'js-cookie' // 可以操作前端cookie的对象set()/get()/remove()
 import { setPath } from '../../utils/index'
 import { getUser } from '../../redux/actions'
@@ -13,6 +20,38 @@ class Main extends Component {
     super()
     this.state = {}
   }
+  // 给组件对象添加属性
+  navList = [
+    //包含所有导航组件的相关属性信息
+    {
+      path: '/shuaige', // 路由路径
+      component: ShuaiGe,
+      title: '美女列表',
+      icon: 'meinv',
+      text: '美女'
+    },
+    {
+      path: '/meinv', // 路由路径
+      component: MeiNv,
+      title: '帅哥列表',
+      icon: 'shuaige',
+      text: '帅哥'
+    },
+    {
+      path: '/message', // 路由路径
+      component: Message,
+      title: '消息列表',
+      icon: 'message',
+      text: '消息'
+    },
+    {
+      path: '/personal', // 路由路径
+      component: Personal,
+      title: '用户中心',
+      icon: 'personal',
+      text: '个人'
+    }
+  ]
   // 生命周期函数
   componentDidMount () {
     // 曾经登录过（cookie中有userId），但是现在还没登录（reducer中有userId的数据），如果cookie中有userId，发送请求获取对应的user
@@ -46,13 +85,32 @@ class Main extends Component {
     } else {
       let path = this.props.location.pathname
       if (path == '/') path = setPath(this.props.type, this.props.header)
+
+      const {navList}=this
+      const routePath=this.props.location.pathname
+      const currentNav=navList.find(nav=>nav.path===routePath)  //得到当前的nav，可能没有
+      // 处理底部导航的显示和隐藏
+      if (currentNav) {
+        if (this.props.type=='meinv') {
+          this.navList[0].hide=true
+        }else{
+          this.navList[1].hide=true
+        }
+      }
       return (
         <div>
+          {currentNav?<NavBar>{currentNav.title}</NavBar>:null}
+          
           <Switch>
+            {
+              navList.map(nav=><Route path={nav.path} component={nav.component} key={nav.path}></Route>)
+            }
             <Route path='/shuaigeinfo' component={ShuaiGeInfo}></Route>
             <Route path='/meinvinfo' component={MeiNvInfo}></Route>
+            <Route path='/notfound' component={NotFound}></Route>
             <Redirect to={path} />
           </Switch>
+          {currentNav?<NavFooter navList={navList}></NavFooter>:null}
         </div>
       )
     }
