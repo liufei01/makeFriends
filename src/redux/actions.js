@@ -1,7 +1,19 @@
 // 包含多个action creator 异步action 同步action
-import { reqRegister, reqLogin,reqUpdataUser,reqUser } from '../api/index'
+import {
+  reqRegister,
+  reqLogin,
+  reqUpdataUser,
+  reqUser,
+  reqUserList
+} from '../api/index'
 
-import { AUTH_SUCCESS, ERROR_MSG,RECEIVE_MSG,RESET_USER } from './action-types'
+import {
+  AUTH_SUCCESS,
+  ERROR_MSG,
+  RECEIVE_MSG,
+  RESET_USER,
+  RECEIVE_USERLIST
+} from './action-types'
 
 // 每一个action_types都对应一个同步action
 
@@ -25,6 +37,11 @@ const receiveMsg = user => ({
 export const reserMsg = msg => ({
   type: RESET_USER,
   data: msg
+})
+// 接收用户列表的同步action
+export const receiveUserList = userlist => ({
+  type: RECEIVE_USERLIST,
+  data: userlist
 })
 // 注册异步action
 export const register = ({ username, password, password2, type }) => {
@@ -70,14 +87,14 @@ export const login = ({ username, password }) => {
 }
 
 // 更新用户action
-export const updateUser=(user)=>{
-  return async dispath=>{
-    const response= await reqUpdataUser(user)
-    const res=response.data
-    if (res.code==0) {
+export const updateUser = user => {
+  return async dispath => {
+    const response = await reqUpdataUser(user)
+    const res = response.data
+    if (res.code == 0) {
       // 分发成功的同步action
       dispath(receiveMsg(res.data))
-    }else{
+    } else {
       // 分发失败的同步action
       dispath(reserMsg(res.msg))
     }
@@ -85,15 +102,26 @@ export const updateUser=(user)=>{
 }
 
 // 获取用户的action
-export const getUser=()=>{
-  return async dispath=>{
-    const response=await reqUser()
-    const res=response.data
-    if(res.code==0) {
+export const getUser = () => {
+  return async dispath => {
+    const response = await reqUser()
+    const res = response.data
+    if (res.code == 0) {
       // 分发成功的同步
       dispath(receiveMsg(res.data))
-    }else{
+    } else {
       dispath(reserMsg(res.msg))
+    }
+  }
+}
+// 获取用户列表的action
+export const getUserList = type => {
+  return async dispath => {
+    const response = await reqUserList(type)
+    const res = response.data
+    if (res.code == 0) {
+      // 分发成功的同步
+      dispath(receiveUserList(res.data))
     }
   }
 }

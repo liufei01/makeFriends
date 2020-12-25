@@ -11,6 +11,7 @@ import Message from '../message/message'
 import Personal from '../personal/personal'
 import NotFound from '../../components/not-found/not-found'
 import NavFooter from '../../components/nav-footer/nav-footer'
+import Chat from '../chat/chat'
 import Cookies from 'js-cookie' // 可以操作前端cookie的对象set()/get()/remove()
 import { setPath } from '../../utils/index'
 import { getUser } from '../../redux/actions'
@@ -99,7 +100,7 @@ class Main extends Component {
       }
       return (
         <div>
-          {currentNav?<NavBar>{currentNav.title}</NavBar>:null}
+          {currentNav?<NavBar className='sticky-header'>{currentNav.title}</NavBar>:null}
           
           <Switch>
             {
@@ -107,6 +108,7 @@ class Main extends Component {
             }
             <Route path='/shuaigeinfo' component={ShuaiGeInfo}></Route>
             <Route path='/meinvinfo' component={MeiNvInfo}></Route>
+            <Route path='/chat/:userId' component={Chat}></Route>
             <Route path='/notfound' component={NotFound}></Route>
             <Redirect to={path} />
           </Switch>

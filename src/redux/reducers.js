@@ -1,7 +1,7 @@
 /*包含多个用于生成新的state的reducer函数的模块*/
 import { combineReducers } from 'redux'
 
-import { AUTH_SUCCESS, ERROR_MSG,RECEIVE_MSG,RESET_USER } from './action-types'
+import { AUTH_SUCCESS, ERROR_MSG,RECEIVE_MSG,RESET_USER,RECEIVE_USERLIST } from './action-types'
 import {setPath} from '../utils/index'
 
 const initUser = {
@@ -28,5 +28,16 @@ function user (state = initUser, action) {
   }
 }
 
+const initUserList=[]
+// 产生userlist状态的reducer
+function userlist(state = initUserList, action) { 
+  switch (action.type) {
+    case RECEIVE_USERLIST:
+      return action.data
+    default:
+      return state;
+  }
+ }
+
 //返回合并后的reducer函数
-export default combineReducers({ user })
+export default combineReducers({ user ,userlist})

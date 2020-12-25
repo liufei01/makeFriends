@@ -25,7 +25,7 @@ class Personal extends React.Component {
   render () {
     const { username, age, xueii, money, header, detail, type } = this.props
     return (
-      <div>
+      <div style={{marginBottom:55,marginTop:50}}>
         <Result
           img={
             <img

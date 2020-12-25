@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux' // 引入文件使用redux做准备
 import { HashRouter, Route, Switch } from 'react-router-dom'
+import './test/socketIO_test'
 
 import store from './redux/store'
 import Register from './containers/register/register'

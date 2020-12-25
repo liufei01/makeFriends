@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-export default function ajax (url, data = {}, type = 'GET') {
-  if (type == 'GET') {
+export default function ajax (url, data = {}, types = 'GET') {
+  if (types == 'GET') {
     // 原始数据是：{username：Tom，password：123}
     // 格式化的数据：username=Tom&password=123
     if (Object.keys(data).length === 0) {
