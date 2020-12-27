@@ -57,7 +57,8 @@ class Main extends Component {
   componentDidMount () {
     // 曾经登录过（cookie中有userId），但是现在还没登录（reducer中有userId的数据），如果cookie中有userId，发送请求获取对应的user
     const userId = Cookies.get('userId')
-    if (userId && !this.props._id) {
+    
+    if (userId && !this.props.user._id) {
       // 发送异步请求，获取user
       this.props.getUser()
     }
@@ -73,26 +74,26 @@ class Main extends Component {
      * 根据user的type和header来计算出一个重定向的路由路径，并自动重定向
      *
      */
-
     //  路由跳转情况1：没有userId，直接跳转到login页面
     const userId = Cookies.get('userId')
+    const {unReadCount}=this.props
     if (!userId) {
       return <Redirect to={'/login'} />
     }
     // 路由跳转情况2：如果没有_id通过生命周期函数去请求用户信息获取用户信息实现自登陆
     // 如果有_id进根据url的地址进行跳转
-    if (!this.props._id) {
+    if (!this.props.user._id) {
       return null
     } else {
       let path = this.props.location.pathname
-      if (path == '/') path = setPath(this.props.type, this.props.header)
+      if (path == '/') path = setPath(this.props.user.type, this.props.user.header)
 
       const {navList}=this
       const routePath=this.props.location.pathname
       const currentNav=navList.find(nav=>nav.path===routePath)  //得到当前的nav，可能没有
       // 处理底部导航的显示和隐藏
       if (currentNav) {
-        if (this.props.type=='meinv') {
+        if (this.props.user.type=='meinv') {
           this.navList[0].hide=true
         }else{
           this.navList[1].hide=true
@@ -112,11 +113,11 @@ class Main extends Component {
             <Route path='/notfound' component={NotFound}></Route>
             <Redirect to={path} />
           </Switch>
-          {currentNav?<NavFooter navList={navList}></NavFooter>:null}
+          {currentNav?<NavFooter navList={navList} unReadCount={unReadCount}></NavFooter>:null}
         </div>
       )
     }
   }
 }
 
-export default connect(state => state.user, { getUser })(Main)
+export default connect(state => ({user:state.user,unReadCount:state.chatMsgList.unReadCount}), { getUser })(Main)
