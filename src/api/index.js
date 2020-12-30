@@ -20,3 +20,6 @@ export const reqChatMsgList=()=>ajax('/msglist')
 
 // 修改指定消息为已读
 export const reqReadMsg=(from)=>ajax('/readmsg',{from},"POST")
+
+// 按需搜索用户
+export const reqSearchPeo=(xueliArrs)=>ajax('/searchPeopel',xueliArrs,"POST")

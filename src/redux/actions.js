@@ -7,7 +7,8 @@ import {
   reqUser,
   reqUserList,
   reqChatMsgList,
-  reqReadMsg
+  reqReadMsg,
+  reqSearchPeo
 } from '../api/index'
 
 import {
@@ -197,6 +198,18 @@ export const readMsg = (from,to) => {
       // 分发成功的同步action
       const count = res.data
       dispatch(readMsgs({count,from,to}))
+    }
+  }
+}
+
+// 按需获取用户列表
+export const getXueLiPeo=(xueliArrays)=>{
+  return async dispatch=>{
+    const response=await reqSearchPeo(xueliArrays)
+    const res=response.data
+    if (res.code===0) {
+      // 分发成功的同步action
+      dispatch(receiveUserList(res.data))
     }
   }
 }

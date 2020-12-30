@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { NavBar } from 'antd-mobile'
+import { NavBar, Icon } from 'antd-mobile'
 import ShuaiGeInfo from '../shuaige_info/shuaige_info'
 import MeiNvInfo from '../meinv_info/meinv_info'
 import MeiNv from '../meinv/meinv'
@@ -12,6 +12,7 @@ import Personal from '../personal/personal'
 import NotFound from '../../components/not-found/not-found'
 import NavFooter from '../../components/nav-footer/nav-footer'
 import Chat from '../chat/chat'
+import Search from '../search/search'
 import Cookies from 'js-cookie' // 可以操作前端cookie的对象set()/get()/remove()
 import { setPath } from '../../utils/index'
 import { getUser } from '../../redux/actions'
@@ -57,7 +58,7 @@ class Main extends Component {
   componentDidMount () {
     // 曾经登录过（cookie中有userId），但是现在还没登录（reducer中有userId的数据），如果cookie中有userId，发送请求获取对应的user
     const userId = Cookies.get('userId')
-    
+
     if (userId && !this.props.user._id) {
       // 发送异步请求，获取user
       this.props.getUser()
@@ -76,7 +77,7 @@ class Main extends Component {
      */
     //  路由跳转情况1：没有userId，直接跳转到login页面
     const userId = Cookies.get('userId')
-    const {unReadCount}=this.props
+    const { unReadCount } = this.props
     if (!userId) {
       return <Redirect to={'/login'} />
     }
@@ -86,38 +87,73 @@ class Main extends Component {
       return null
     } else {
       let path = this.props.location.pathname
-      if (path == '/') path = setPath(this.props.user.type, this.props.user.header)
+      if (path == '/')
+        path = setPath(this.props.user.type, this.props.user.header)
 
-      const {navList}=this
-      const routePath=this.props.location.pathname
-      const currentNav=navList.find(nav=>nav.path===routePath)  //得到当前的nav，可能没有
+      const { navList } = this
+      const routePath = this.props.location.pathname
+      const currentNav = navList.find(nav => nav.path === routePath) //得到当前的nav，可能没有
       // 处理底部导航的显示和隐藏
       if (currentNav) {
-        if (this.props.user.type=='meinv') {
-          this.navList[0].hide=true
-        }else{
-          this.navList[1].hide=true
+        if (this.props.user.type == 'meinv') {
+          this.navList[0].hide = true
+        } else {
+          this.navList[1].hide = true
         }
       }
       return (
         <div>
-          {currentNav?<NavBar className='sticky-header'>{currentNav.title}</NavBar>:null}
-          
+          {currentNav ? (
+            currentNav.path === '/personal' ? (
+              <NavBar
+                className='sticky-header'
+                rightContent={[<Icon key='1' type='ellipsis' />]}
+              >
+                {currentNav.title}
+              </NavBar>
+            ) : (
+              <NavBar
+                className='sticky-header'
+                rightContent={[
+                  <Icon
+                    key='0'
+                    type='search'
+                    style={{ marginRight: '16px' }}
+                    onClick={()=>this.props.history.push(`/search`)}
+                  />,
+                  <Icon key='1' type='ellipsis' />
+                ]}
+              >
+                {currentNav.title}
+              </NavBar>
+            )
+          ) : null}
+
           <Switch>
-            {
-              navList.map(nav=><Route path={nav.path} component={nav.component} key={nav.path}></Route>)
-            }
+            {navList.map(nav => (
+              <Route
+                path={nav.path}
+                component={nav.component}
+                key={nav.path}
+              ></Route>
+            ))}
             <Route path='/shuaigeinfo' component={ShuaiGeInfo}></Route>
             <Route path='/meinvinfo' component={MeiNvInfo}></Route>
+            <Route path='/search' component={Search}></Route>
             <Route path='/chat/:userId' component={Chat}></Route>
             <Route path='/notfound' component={NotFound}></Route>
             <Redirect to={path} />
           </Switch>
-          {currentNav?<NavFooter navList={navList} unReadCount={unReadCount}></NavFooter>:null}
+          {currentNav ? (
+            <NavFooter navList={navList} unReadCount={unReadCount}></NavFooter>
+          ) : null}
         </div>
       )
     }
   }
 }
 
-export default connect(state => ({user:state.user,unReadCount:state.chatMsgList.unReadCount}), { getUser })(Main)
+export default connect(
+  state => ({ user: state.user, unReadCount: state.chatMsgList.unReadCount }),
+  { getUser }
+)(Main)

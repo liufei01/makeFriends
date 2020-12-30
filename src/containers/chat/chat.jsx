@@ -63,7 +63,6 @@ class Chat extends React.Component {
   // 保证列表自动滑动到底部
   componentDidMount () {
     // 初始化显示列表
-    console.log( document.documentElement.scrollTop)
     window.scrollTo(0, 1000)
     // 发送请求更新消息的未读状态
     // const readId = this.props.match.params.userId //接收消息的用户id
