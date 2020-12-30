@@ -1,3 +1,15 @@
+.clearfix:after {
+  /*伪元素是行内元素 正常浏览器清除浮动方法*/
+  content: '';
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.clearfix {
+  *zoom: 1;
+  /*ie6清除浮动的方式 *号只有IE6-IE7执行，其他浏览器不执行*/
+}
 .error-msg {
   color: red;
   text-align: center;
@@ -18,11 +30,39 @@
   width: 100%;
 }
 /*消息文本居右*/
-#chat-page .chat-me .am-list-extra {
-  flex-basis: auto;
-  /*宽度包裹内容*/
-}
 #chat-page .chat-me .am-list-content {
-  padding-right: 15px;
-  text-align: right;
+  padding-right: 30px;
+  padding-left: 40px;
+  text-align: end;
+}
+#chat-page .otherPeo .am-list-content {
+  padding-right: 35px;
+}
+#chat-page .otherPeo .am-list-content > span {
+  display: inline-block;
+  text-align: left;
+  background: #7697f1;
+  border-radius: 5px;
+  padding: 7px 8px;
+}
+#chat-page .chat-me .am-list-thumb {
+  position: absolute;
+  right: 0;
+}
+#chat-page .chat-me .am-list-content > span {
+  display: inline-block;
+  text-align: left;
+  background: #31ec31;
+  border-radius: 5px;
+  padding: 7px 8px;
+}
+.messageStyle .am-list-content .am-badge {
+  float: left;
+  margin-top: 15px;
+}
+.messageStyle .am-list-content .am-list-extra {
+  flex-basis: 30%;
+}
+.messageStyle .am-list-content .userNameAndContent {
+  float: left;
 }

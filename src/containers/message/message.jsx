@@ -3,9 +3,9 @@
  */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Moment from 'moment'
 import { List, Badge } from 'antd-mobile'
 const Item = List.Item
-const Brief = Item.Brief
 
 // 对chatMsgs根据chat_id进行分组，并得到每个组的lastmsg组成的数组
 /**
@@ -14,14 +14,14 @@ const Brief = Item.Brief
  * 3、对数组进行排序（按create_time降序)
  * @param {*} chatMsgs
  */
-function getLastMsgs (chatMsgs,userId) {
+function getLastMsgs (chatMsgs, userId) {
   const lastMsgObjs = {}
   chatMsgs.forEach(msg => {
     // 对msg进行个体统计  (别人发给我的，而且还说我没有读的消息)
-    if (msg.to===userId&&!msg.read) {
-      msg.unReadCount=1
-    }else{
-      msg.unReadCount=0
+    if (msg.to === userId && !msg.read) {
+      msg.unReadCount = 1
+    } else {
+      msg.unReadCount = 0
     }
     const chatId = msg.chat_id
     const lastMsg = lastMsgObjs[chatId]
@@ -30,13 +30,13 @@ function getLastMsgs (chatMsgs,userId) {
       lastMsgObjs[chatId] = msg
     } else {
       // 累加UnReadCount=已经统计的+当前msg的
-      const unReadCount=lastMsg.unReadCount+msg.unReadCount
+      const unReadCount = lastMsg.unReadCount + msg.unReadCount
       //如果msg比lastMsg晚，就将msg保存为lastMsg
       if (msg.create_time > lastMsg.create_time) {
         lastMsgObjs[chatId] = msg
       }
       // 将UnReadCount保存最新的lastMsg上
-      lastMsgObjs[chatId].unReadCount=unReadCount
+      lastMsgObjs[chatId].unReadCount = unReadCount
     }
   })
   // 得到所有的lastMsg组成的数组
@@ -55,31 +55,43 @@ class Message extends Component {
     const { users, chatMsgs } = this.props.chat
 
     // 对chatMsgs根据chat_id进行分组
-    const lastLists = getLastMsgs(chatMsgs,user._id) //不加this的函数调用，函数需要定义到class外面，如果加this调用函数，函数需要定义到class里面
+    const lastLists = getLastMsgs(chatMsgs, user._id) //不加this的函数调用，函数需要定义到class外面，如果加this调用函数，函数需要定义到class里面
     return (
-      <List style={{ marginTop: 50, marginBottom: 50 }}>
+      <List
+        style={{ marginTop: 50, marginBottom: 50 }}
+        className='messageStyle'
+      >
         {lastLists.map(msg => {
           // 得到目标用户的id
-          const targetUserId=msg.to===user._id?msg.from:msg.to
+          const fromTime = Moment(msg.create_time).format('HH:mm')
+          const targetUserId = msg.to === user._id ? msg.from : msg.to
           // 得到目标用户的信息
-          const targetUser=users[targetUserId]
+          const targetUser = users[targetUserId]
+          if (msg.unReadCount > 99) {
+            msg.unReadCount = 99 + '+'
+          }
           return (
             <Item
-            extra={<Badge text={msg.unReadCount} />}
-            key={msg._id}
-            thumb={
-              targetUser.header
-                ? require(`../../assets/images/${targetUser.header}.png`).default
-                : null
-            }
-            arrow='horizontal'
-            onClick={()=>this.props.history.push(`/chat/${targetUserId}`)}
-          >
-            {msg.content}
-            <Brief>
-              {targetUser.username}
-            </Brief>
-          </Item>
+              extra={fromTime}
+              arrow='horizontal'
+              key={msg._id}
+              onClick={() => this.props.history.push(`/chat/${targetUserId}`)}
+            >
+              <Badge text={msg.unReadCount}>
+                <img
+                  src={
+                    targetUser.header
+                      ? require(`../../assets/images/${targetUser.header}.png`)
+                          .default
+                      : null
+                  }
+                />
+              </Badge>
+              <span style={{ marginLeft: 20 ,width:'80%'}} className='userNameAndContent'>
+                <div>{targetUser.username}</div>
+                <div>{msg.content}</div>
+              </span>
+            </Item>
           )
         })}
       </List>

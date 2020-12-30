@@ -63,7 +63,8 @@ class Chat extends React.Component {
   // 保证列表自动滑动到底部
   componentDidMount () {
     // 初始化显示列表
-    window.scrollTo(0, document.body.scrollHeight)
+    console.log( document.documentElement.scrollTop)
+    window.scrollTo(0, 1000)
     // 发送请求更新消息的未读状态
     // const readId = this.props.match.params.userId //接收消息的用户id
     // const userId = this.props.user._id // 自己的id
@@ -77,10 +78,15 @@ class Chat extends React.Component {
 
   componentDidUpdate () {
     // 更新显示列表
-    window.scrollTo(0, document.body.scrollHeight)
+    window.scrollTo(0, 1000000)
   }
+
   render () {
     const { user } = this.props
+    // 我自己的头像
+    const myIcon = user.header
+      ? require(`../../assets/images/${user.header}.png`).default
+      : null
     const { users, chatMsgs } = this.props.chat
     // 计算当期聊天的chatId
     const meId = user._id
@@ -110,21 +116,21 @@ class Chat extends React.Component {
           {username}
         </NavBar>
         <List style={{ marginTop: 50, marginBottom: 50 }}>
-        {/* alpha left right top bottom scale scaleBig scaleX scaleY */}
+          {/* alpha left right top bottom scale scaleBig scaleX scaleY */}
           <QueueAnim type={'top'} delay={249}>
             {msgs.map(msg => {
               if (meId === msg.to) {
                 // 别人发给我的
                 return (
-                  <Item thumb={targetIcon} key={msg._id}>
-                    {msg.content}
+                  <Item className='otherPeo' thumb={targetIcon} key={msg._id} wrap={true} multipleLine={true}>
+                    <span>{msg.content}</span>
                   </Item>
                 )
               } else {
                 // 我发给别人的
                 return (
-                  <Item className='chat-me' extra='我' key={msg._id}>
-                    {msg.content}
+                  <Item className='chat-me clearfix' thumb={myIcon} key={msg._id} wrap={true} multipleLine={true}>
+                    <span>{msg.content}</span>
                   </Item>
                 )
               }
