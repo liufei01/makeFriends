@@ -22,7 +22,7 @@ class Search extends React.Component {
         xueliArrays: [...this.state.xueliArrays, val]
       },
       function () {
-        console.log(this.state.xueliArrays)
+        // console.log(this.state.xueliArrays)
       }
     )
   }
@@ -36,7 +36,6 @@ class Search extends React.Component {
       { xueii: '博士' },
       { xueii: '博士后' }
     ]
-    console.log(this.props);
     return (
       <div>
         <NavBar
@@ -70,8 +69,10 @@ class Search extends React.Component {
     )
   }
   searthRes=()=>{
-    this.props.getXueLiPeo(this.state.xueliArrays)
+    let {type}=this.props.user
+    type=type==='shuaige'?'meinv':'shuaige'
+    this.props.getXueLiPeo({type,xueliArrays:this.state.xueliArrays})
   }
 }
 
-export default connect(state=>({userList:state.userlist}),{getXueLiPeo})(Search)
+export default connect(state=>({user:state.user,userList:state.userlist}),{getXueLiPeo})(Search)

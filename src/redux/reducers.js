@@ -68,7 +68,6 @@ function chatMsgList (state = initChat, action) {
       }
     case READ_MSG:
       const {count ,from,to} = action.data
-      console.log({count ,from,to});
       return {
         users: state.users,
         chatMsgs: state.chatMsgs.map(msg=>{

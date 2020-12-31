@@ -22,4 +22,4 @@ export const reqChatMsgList=()=>ajax('/msglist')
 export const reqReadMsg=(from)=>ajax('/readmsg',{from},"POST")
 
 // 按需搜索用户
-export const reqSearchPeo=(xueliArrs)=>ajax('/searchPeopel',xueliArrs,"POST")
+export const reqSearchPeo=({type,xueliArrays})=>ajax('/searchPeopel',{type,xueliArrays},"POST")

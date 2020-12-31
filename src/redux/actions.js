@@ -203,9 +203,9 @@ export const readMsg = (from,to) => {
 }
 
 // 按需获取用户列表
-export const getXueLiPeo=(xueliArrays)=>{
+export const getXueLiPeo=({type,xueliArrays})=>{
   return async dispatch=>{
-    const response=await reqSearchPeo(xueliArrays)
+    const response=await reqSearchPeo({type,xueliArrays})
     const res=response.data
     if (res.code===0) {
       // 分发成功的同步action
