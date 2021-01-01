@@ -1,4 +1,4 @@
-// 包含了很多接口请求的函数模块
+// 封装了很多接口请求的函数模块
 // 注册接口
 import ajax from './ajax'
 export const reqRegister=(user)=>ajax('/register',user,'POST')
