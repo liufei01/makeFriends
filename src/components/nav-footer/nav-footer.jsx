@@ -15,7 +15,6 @@ class Navfooter extends Component {
   }
   render () {
     let { navList ,unReadCount} = this.props
-    console.log(unReadCount);
     // 过滤hide为true的nav
     navList=navList.filter(nav=>!nav.hide)
     const path = this.props.location.pathname
