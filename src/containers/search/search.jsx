@@ -32,6 +32,8 @@ class Search extends React.Component {
       { xueii: '高中' },
       { xueii: '专科' },
       { xueii: '本科' },
+      { xueii: '大学士' },
+      { xueii: '太子伴读' },
       { xueii: '硕士' },
       { xueii: '博士' },
       { xueii: '博士后' }
